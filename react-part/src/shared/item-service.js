@@ -15,8 +15,6 @@ class ItemService {
         return response.json();
       })
       .then(json => {
-        console.log("Retrieved items:");
-        console.log(json);
         for(var i = 0; i < json.items.length; i++) {
           if(json.items[i].episodes === null || json.items[i].episodes === undefined)
 			  json.items[i].episodes = [];
@@ -29,8 +27,6 @@ class ItemService {
   }
 
   async getItem(itemId, token) {
-    console.log("ItemService.getItem():");
-    console.log("Item: " + itemId);
     return fetch(this.config.ITEM_GET_URL + token)
       .then(response => {
         if (!response.ok) {
@@ -50,8 +46,6 @@ class ItemService {
   }
 
   async createItem(newitem, token) {
-    console.log("ItemService.createItem():");
-    console.log(newitem);
     return fetch(this.config.ITEM_CREATE_URL + token, {
       method: "POST",
       headers: {
@@ -71,8 +65,6 @@ class ItemService {
   }
 
   async deleteItem(itemId, token) {
-    console.log("ItemService.deleteItem():");
-    console.log("itemId: " + itemId);
     return fetch(this.config.ITEM_DELETE_URL + token, {
 		//method: "DELETE"
       method: "POST",
@@ -90,8 +82,6 @@ class ItemService {
   }
 
   async updateItem(item, token) {
-    console.log("ItemService.updateItem():");
-    console.log(item);
     return fetch(this.config.ITEM_UPDATE_URL + token, {
 		//method: "PUT"
 		method: "POST",
