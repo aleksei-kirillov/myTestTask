@@ -1,0 +1,155 @@
+.App {
+  /*text-align: center;
+text-align: left;*/
+width: 90%;
+background-color: white;
+border: 1px solid;
+transition: all 0.25s;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+h2 {font-family: Verdana}
+
+ul.items li {font-family: Verdana; list-style-type: none; margin: 10px; }
+ul.items li span.item-name {font-weight: bold;} span.item-summary {font-weight: normal;}
+
+.list-item
+{
+	border: 1px solid;
+	border-color: #d0d0d0;
+	font-family: Verdana;
+	padding: 10px;
+	margin: 30px;
+	border-radius: 5px;
+	background-color: #f9f9f9
+}
+
+ul.item-episodes li 
+{
+	font-family: Arial; 
+	list-style-type: nowrap; 
+	display: inline-block; 
+	border: 2px solid; 
+	border-radius: 5px;
+	margin: 4px; 
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.item-episodes :hover{
+	border-color: green !important;
+}
+
+.welcome-panel {
+	border: 1px solid; 
+	border-radius: 5px;
+	background-color: #d0d0d0;
+	color: black;
+	text-align: center;
+	font-weight: bold;
+	margin: 2px;
+}
+
+.input-panel 
+{
+	border: 1px solid;
+	font-family: Verdana;
+	padding: 10px;
+	margin: 30px;
+	border-radius: 5px;
+	background-color: #f7f7f7
+}
+.field-name {font-weight: bold; display: inline-block; margin-top: 1.5%;}
+
+.form-caption {
+  font-weight: bold;
+  padding-top: 2%;
+  display: inline-block;
+}
+
+.button {
+	border: 2px solid;
+	border-radius: 5px;
+	border-color: black;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-weight: bold;
+	
+	background-color: green;
+	color: white;
+}
+
+.clickable {
+	cursor: pointer; 
+	margin: 2px; 
+}
+
+.item-add {
+	border: 1px solid; 
+	border-radius: 5px;
+	background-color: #d0d0d0;
+	color: black;
+	text-align: center;
+	font-weight: bold;
+}
+
+.item-delete {
+	border: 0px solid; 
+	background-color: #800000;
+	border-radius: 5px;
+	border-color: red;
+	color: white;
+	text-align: center;
+	font-weight: bold;
+	font-size: 12px;
+	margin: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	
+	min-width: 20px;
+}
+
+.episode-episode {
+	font-weight: bold;
+	transition: all 0.25s;
+}
+
+.viewed {
+	color: #e0e0e0;
+	transition: all 0.25s;
+}
+
+.login-panel {
+	border: 1px solid;
+	border-radius: 10px;
+	padding: 20px;
+	width: 600px;
+}
+
+.login-help-text {
+	font-size: 14px;
+	color: gray;
+}
+
+.spacer {
+	min-width: 50px;
+}
+
