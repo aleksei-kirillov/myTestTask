@@ -11,7 +11,6 @@
     public class ItemController : Controller
   {
     [ActionName("Index")]
-    [Route("{user}")]
     public async Task<JsonResult> IndexAsync(string token)
     {
       IEnumerable<Item> items = new List<Item>();
@@ -34,7 +33,6 @@
 
     [HttpPost]
     [ActionName("Create")]
-    [ValidateAntiForgeryToken]
     public async Task<ActionResult> CreateAsync([Bind(Include = "Id,Link,Name,Description,Summary")] Item item, string token)
     {
       if (ModelState.IsValid)

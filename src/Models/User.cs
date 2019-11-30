@@ -58,31 +58,34 @@ public class UserManager
   {
     // on real system here should be something like OAuth2 or some proper token generation, 
     // but since this is test task, getting token with simulation of encryption of username/password and some salt in it - is good enough
-    string token = TokenProvider.GetToken(userName, password);
+    string newToken = TokenProvider.GetToken(userName, password);
     IEnumerable<User> users = await DocumentDBRepository<User>.GetItemsAsync(d => d.UserName == userName);
 
     if (users.Count() == 0)
     {
-      User user = new User { UserName = userName, ActiveToken = token, Password = password };
+      User user = new User { UserName = userName, ActiveToken = newToken, Password = password };
       DocumentDBRepository<User>.CreateItemAsync(user).Wait();
     }
     else
     {
       User user = users.First();
 
+      // yes, i should save & check some hash, MD5 or something here, but i did skip this part; let's pretend there's some code for it?
       if (user.Password != password)
         return null;
 
 
       // token expired? let's update!
-      if(!TokenProvider.CheckToken(user.ActiveToken))
+      if (!TokenProvider.CheckToken(user.ActiveToken))
       {
-        user.ActiveToken = token;
+        user.ActiveToken = newToken;
         DocumentDBRepository<User>.UpdateItemAsync(user.UserName, user).Wait();
       }
+      else
+        return user.ActiveToken;
     }
 
-    return token;
+    return newToken;
   }
 
   public static async Task<string> GetUser(string token)
