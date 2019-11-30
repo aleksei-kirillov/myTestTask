@@ -7,8 +7,8 @@ class ItemService {
   }
 
   async retrieveItems(token) {
-    return fetch(this.config.ITEM_COLLECTION_URL + token)      
-	  .then(response => {
+    return fetch(this.config.ITEM_COLLECTION_URL + token)
+	.then(response => {
         if (!response.ok) {
             this.handleResponseError(response);
         }
@@ -17,30 +17,22 @@ class ItemService {
       .then(json => {
         console.log("Retrieved items:");
         console.log(json);
-        const items = [];
-        const itemArray = json._embedded.collectionItems;
-        for(var i = 0; i < itemArray.length; i++) {
+        /*for(var i = 0; i < itemArray.length; i++) {
           itemArray[i]["link"] =  itemArray[i]._links.self.href;
           items.push(itemArray[i]);
-        }
-        return items;
+        }*/
+        return json.items;
       })
-	  .catch(error => {
+      .catch(error => {
         this.handleError(error);
       });
   }
 
-  async getItem(id, token) {
+  async getItem(itemLink, token) {
     console.log("ItemService.getItem():");
-    console.log("Item: " + id);
-    return fetch(this.config.ITEM_DETAILS_URL + token, {
-      method: "POST",
-      mode: "cors",
-      headers: {
-            "Content-Type": "application/json"
-        },
-      body: JSON.stringify({id: id})
-		}).then(response => {
+    console.log("Item: " + itemLink);
+    return fetch(this.config.ITEM_GET_URL + token)
+      .then(response => {
         if (!response.ok) {
             this.handleResponseError(response);
         }
@@ -59,7 +51,7 @@ class ItemService {
   async createItem(newitem, token) {
     console.log("ItemService.createItem():");
     console.log(newitem);
-    return fetch(this.config.ITEM_COLLECTION_URL + token, {
+    return fetch(this.config.ITEM_CREATE_URL + token, {
       method: "POST",
       mode: "cors",
       headers: {
@@ -78,11 +70,13 @@ class ItemService {
       });
   }
 
-  async deleteItem(id, token) {
+  async deleteItem(itemlink, token) {
     console.log("ItemService.deleteItem():");
+    console.log("item: " + itemlink);
     return fetch(this.config.ITEM_DELETE_URL + token, {
       method: "DELETE",
-      mode: "cors"
+      mode: "cors",
+	  body: JSON.stringify(itemlink)
     })
       .then(response => {
         if (!response.ok) {
@@ -96,27 +90,21 @@ class ItemService {
 
   async updateItem(item, token) {
     console.log("ItemService.updateItem():");
+    console.log(item);
     return fetch(this.config.ITEM_UPDATE_URL + token, {
-      method: "PUT",
-      mode: "cors",
-      headers: {
-            "Content-Type": "application/json"
-          },
-	  body: JSON.stringify
-		({
-		  token: token,
-		  item: item
-		})
-    })
-      .then(response => {
-        if (!response.ok) {
+		method: "PUT",
+		mode: "cors",
+		headers: {"Content-Type": "application/json"},
+		body: JSON.stringify(item)
+	})
+    .then(response => {
+        if (!response.ok) 
           this.handleResponseError(response);
-        }
-        return response.json();
-      })
-      .catch(error => {
+		return response.json();
+    })
+    .catch(error => {
         this.handleError(error);
-      });
+    });
   }
 
   handleResponseError(response) {

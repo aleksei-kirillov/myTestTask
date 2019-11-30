@@ -29,7 +29,8 @@ class App extends Component {
       selectedItem: null,
       newItem: null,
 	  userName: null,
-	  token: null
+	  token: null,
+	  items: []
     }
   }
 
@@ -39,7 +40,6 @@ class App extends Component {
 
   render() {
     const items = this.state.items;
-    if(!items) return null;
 		
 	if(this.state.token == null)
 	{
@@ -54,7 +54,7 @@ class App extends Component {
     const listItems = items.map((item) =>
       <li className="list-item" key={item.link}>
 		<span onClick={() => this.onDeleteItem(item.link)} className="item-delete clickable" title="remove this show from the list">✖</span> &nbsp;
-        <span onClick={() => this.onSelect(item.link)} className="item-name clickable">{item.name}&nbsp;|&nbsp; <span className="item-summary">{item.summary}</span></span>
+        <span onClick={() => this.onSelect(item)} className="item-name clickable">{item.name}&nbsp;|&nbsp; <span className="item-summary">{item.summary}</span></span>
 			<ul className="item-episodes">
 				{item.episodes.map((episode)=> <span key={episode.episode} onClick={()=>{this.onEpisodeClick(item, episode.episode)}}><ItemEpisode data={{episode:episode, item: item}} /></span>)}
 				&nbsp;...&nbsp;
@@ -84,21 +84,28 @@ class App extends Component {
   }
 
   getItems() {
-    this.itemService.retrieveItems(this.state.userName).then(items => {
+	if(this.state.token === null || this.state.token === "")
+		return;
+	
+    this.itemService.retrieveItems(this.state.token).then(items => {
           this.setState({items: items});
         }
     );
   }
 
-  onSelect(itemLink) {
-    this.clearState();
-    this.itemService.getItem(itemLink).then(item => {
+  onSelect(item) {
+//	this.clearState();
+	this.setState({
+	  showDetails: true,
+	  selectedItem: item
+	});
+/*    this.itemService.getItem(itemLink, this.state.token).then(item => {
       this.setState({
           showDetails: true,
           selectedItem: item
         });
       }
-    );
+    );*/
   }
 
   onEpisodeClick(item, episodeName)
@@ -106,7 +113,7 @@ class App extends Component {
 	item.episodes.forEach(e => {if(e.episode === episodeName)e.viewed = !e.viewed;});
 
     this.clearState();
-    this.itemService.updateItem(item).then(item => {
+    this.itemService.updateItem(item, this.state.token).then(item => {
         this.getItems();
       }
     );
@@ -125,7 +132,7 @@ class App extends Component {
 	item.episodes.push({episode: "s" + item.lastSeason + "e" + item.lastEpisode, viewed: false});
 
     this.clearState();
-    this.itemService.updateItem(item).then(item => {
+    this.itemService.updateItem(item, this.state.token).then(item => {
         this.getItems();
       }
     );
@@ -185,6 +192,7 @@ class App extends Component {
   onLogin(token, userName)
   {
 	  this.setState({"token": token, "userName": userName});
+	  this.getItems();
 	  this.forceUpdate();
   }
 

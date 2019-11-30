@@ -19,8 +19,6 @@ class NewItem extends Component {
     this.state = {
       name: '',
       summary: '',
-      year: '',
-      country: '',
       description: '',
 	  episodes: []
     };
