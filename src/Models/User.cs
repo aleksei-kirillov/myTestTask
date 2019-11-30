@@ -37,7 +37,7 @@ public class TokenProvider
 
     // even in mockup here should go encryption... but...
     // HereWasSomeEncryption()
-    return Convert.ToBase64String(time.Concat(key).ToArray());
+    return Uri.EscapeUriString(Convert.ToBase64String(time.Concat(key).ToArray()));
   }
 
   static public bool CheckToken(string token)

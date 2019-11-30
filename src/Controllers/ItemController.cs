@@ -5,20 +5,20 @@
   using System.Web.Mvc;
   using Models;
   using System.Web.Helpers;
-    using System.Linq;
-    using System.Collections.Generic;
+  using System.Linq;
+  using System.Collections.Generic;
 
-    public class ItemController : Controller
+  public class ItemController : Controller
   {
     [ActionName("Index")]
     public async Task<JsonResult> IndexAsync(string token)
     {
       IEnumerable<Item> items = new List<Item>();
       string userName = await UserManager.GetUser(token);
-      if(userName == null)
+      if (userName == null)
         return Json(new { items }, JsonRequestBehavior.AllowGet);
 
-      items = await DocumentDBRepository<Item>.GetItemsAsync(d => d.User == userName);
+      items = await DocumentDBRepository<Item>.GetItemsAsync(d => d.user == userName);
 
       return Json(new { items, userName }, JsonRequestBehavior.AllowGet);
     }
@@ -33,7 +33,7 @@
 
     [HttpPost]
     [ActionName("Create")]
-    public async Task<ActionResult> CreateAsync([Bind(Include = "Id,Link,Name,Description,Summary")] Item item, string token)
+    public async Task<ActionResult> CreateAsync([Bind(Include = "id,link,name,description,summary,episodes")] Item item, string token)
     {
       if (ModelState.IsValid)
       {
@@ -41,7 +41,9 @@
         if (userName == null)
           return Json(new { error = "invalid user" }, JsonRequestBehavior.AllowGet);
 
-        item.User = userName;
+        item.user = userName;
+        if (item.episodes == null)
+          item.episodes = new Episode[0];
         await DocumentDBRepository<Item>.CreateItemAsync(item);
         return Json(new { userName }, JsonRequestBehavior.AllowGet);
       }
@@ -49,10 +51,10 @@
       return Json(new { error = "fail" }, JsonRequestBehavior.AllowGet);
     }
 
+    //[HttpPut]
     [HttpPost]
     [ActionName("Edit")]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult> EditAsync([Bind(Include = "Id,Link,Name,Description,Summary")] Item item, string token)
+    public async Task<ActionResult> EditAsync([Bind(Include = "id,link,name,description,summary,episodes")] Item item, string token)
     {
       if (ModelState.IsValid)
       {
@@ -60,36 +62,18 @@
         if (userName == null)
           return Json(new { error = "invalid user" }, JsonRequestBehavior.AllowGet);
 
-        await DocumentDBRepository<Item>.UpdateItemAsync(item.Id, item);
+        item.user = userName;
+
+        await DocumentDBRepository<Item>.UpdateItemAsync(item.id, item);
         return Json(new { userName }, JsonRequestBehavior.AllowGet);
       }
 
       return Json(new { error = "fail" }, JsonRequestBehavior.AllowGet);
     }
 
-    [ActionName("Edit")]
-    public async Task<ActionResult> EditAsync(string id, string token)
-    {
-      if (id == null)
-      {
-        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-      }
-
-      string userName = await UserManager.GetUser(token);
-      if (userName == null)
-        return Json(new { error = "invalid user" }, JsonRequestBehavior.AllowGet);
-
-      Item item = await DocumentDBRepository<Item>.GetItemAsync(id);
-      if (item == null)
-      {
-        return HttpNotFound();
-      }
-      await DocumentDBRepository<Item>.UpdateItemAsync(item.Id, item);
-      return Json(new { userName }, JsonRequestBehavior.AllowGet);
-
-      return View(item);
-    }
-
+//    [HttpDelete]
+    [HttpPost]
+    [Route("{controller}/{action}/{token}/{id}")]
     [ActionName("Delete")]
     public async Task<ActionResult> DeleteAsync(string id, string token)
     {
@@ -107,18 +91,6 @@
       {
         return HttpNotFound();
       }
-
-      return Json(new { userName }, JsonRequestBehavior.AllowGet);
-    }
-
-    [HttpPost]
-    [ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult> DeleteConfirmedAsync([Bind(Include = "Id")] string id, string token)
-    {
-      string userName = await UserManager.GetUser(token);
-      if (userName == null)
-        return Json(new { error = "invalid user" }, JsonRequestBehavior.AllowGet);
 
       await DocumentDBRepository<Item>.DeleteItemAsync(id);
       return Json(new { userName }, JsonRequestBehavior.AllowGet);

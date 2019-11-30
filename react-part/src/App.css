@@ -149,6 +149,10 @@ ul.item-episodes li
 	color: gray;
 }
 
+.error {
+	color: red;
+}
+
 .spacer {
 	min-width: 50px;
 }

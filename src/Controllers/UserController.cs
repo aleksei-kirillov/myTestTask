@@ -10,8 +10,6 @@ using System.Web.Mvc;
 
 namespace todo.Controllers
 {
-
-
   public class UserController : Controller
   {
     [HttpPost]
@@ -19,9 +17,11 @@ namespace todo.Controllers
     {
       // on real system here should be something like OAuth2 or some proper token generation, 
       // but since this is test task, getting token with simple encryption of username/password and some salt in it - is good enough
+      string token = await UserManager.GetToken(userName, password);
+      string error = token == null ? "invalid login" : "";
       return new JsonResult
       {
-        Data = new{token = await UserManager.GetToken(userName, password)},
+        Data = new{token, error},
         JsonRequestBehavior = JsonRequestBehavior.AllowGet
       };
     }

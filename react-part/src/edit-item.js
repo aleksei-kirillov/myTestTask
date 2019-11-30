@@ -14,7 +14,6 @@ class EditItem extends Component {
     this.state = {
       name: itemToEdit.name,
       summary: itemToEdit.summary,
-      description: itemToEdit.description,
       link: itemToEdit.link,
 	  episodes: itemToEdit.episodes
     };

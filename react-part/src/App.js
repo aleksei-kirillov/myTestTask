@@ -4,7 +4,7 @@ import ItemDetails from './item-details';
 import NewItem from './new-item';
 import EditItem from './edit-item';
 import ItemService from './shared/item-service';
-import ItemEpisode from './item-episode';
+import ItemEpisodes from './item-episode';
 import Login from './login';
 
 class App extends Component {
@@ -51,19 +51,20 @@ class App extends Component {
     const newItem = this.state.newItem;
     const editItem = this.state.editItem;
 	
-    const listItems = items.map((item) =>
-      <li className="list-item" key={item.link}>
-		<span onClick={() => this.onDeleteItem(item.link)} className="item-delete clickable" title="remove this show from the list">✖</span> &nbsp;
+    const listItems = items.length>0? items.map((item) =>
+      <li className="list-item" key={item.id}>
+		<span onClick={() => this.onDeleteItem(item)} className="item-delete clickable" title="remove this show from the list">✖</span> &nbsp;
         <span onClick={() => this.onSelect(item)} className="item-name clickable">{item.name}&nbsp;|&nbsp; <span className="item-summary">{item.summary}</span></span>
 			<ul className="item-episodes">
-				{item.episodes.map((episode)=> <span key={episode.episode} onClick={()=>{this.onEpisodeClick(item, episode.episode)}}><ItemEpisode data={{episode:episode, item: item}} /></span>)}
+				<ItemEpisodes data={{item:item, onEpisodeClick:this.onEpisodeClick}} />
+
 				&nbsp;...&nbsp;
-			
+
 				<li className="item-episode-add button clickable" title="add episode" onClick={()=>this.onAddEpisodeClick(item)}>+</li>
 			</ul>
 			<br/>
       </li>
-    );
+    ) : "";
 
     return (
 	<div>
@@ -94,29 +95,18 @@ class App extends Component {
   }
 
   onSelect(item) {
-//	this.clearState();
 	this.setState({
 	  showDetails: true,
 	  selectedItem: item
 	});
-/*    this.itemService.getItem(itemLink, this.state.token).then(item => {
-      this.setState({
-          showDetails: true,
-          selectedItem: item
-        });
-      }
-    );*/
   }
 
   onEpisodeClick(item, episodeName)
   {
-	item.episodes.forEach(e => {if(e.episode === episodeName)e.viewed = !e.viewed;});
+	item.episodes.forEach(e => {if(e.episodeId === episodeName)e.viewed = !e.viewed;});
 
     this.clearState();
-    this.itemService.updateItem(item, this.state.token).then(item => {
-        this.getItems();
-      }
-    );
+    this.itemService.updateItem(item, this.state.token);
   }
 
   onAddEpisodeClick(item)
@@ -126,16 +116,13 @@ class App extends Component {
 	else
 		item.lastEpisode = item.lastEpisode + 1;
 	
-	if(item.lastSeason === undefined)
+	if(item.lastSeason === undefined || item.lastSeason === null)
 		item.lastSeason = 1;
 	
-	item.episodes.push({episode: "s" + item.lastSeason + "e" + item.lastEpisode, viewed: false});
+	item.episodes.push({episodeId: "s" + item.lastSeason + "e" + item.lastEpisode, viewed: false});
 
     this.clearState();
-    this.itemService.updateItem(item, this.state.token).then(item => {
-        this.getItems();
-      }
-    );
+    this.itemService.updateItem(item, this.state.token);
   }
 
   onCancel() {
@@ -167,10 +154,7 @@ class App extends Component {
 
   onUpdateItem(item) {
     this.clearState();
-    this.itemService.updateItem(item, this.state.token).then(item => {
-        this.getItems();
-      }
-    );
+    this.itemService.updateItem(item, this.state.token);
   }
 
   onCreateItem(newItem) {
@@ -181,12 +165,13 @@ class App extends Component {
     );
   }
 
-  onDeleteItem(itemLink) {
+  onDeleteItem(item) {
     this.clearState();
-    this.itemService.deleteItem(itemLink, this.state.token).then(res => {
-        this.getItems();
-      }
-    );
+    if(window.confirm("Are you sure to delete item: " + item.name + " ?")) {
+		this.itemService.deleteItem(item.itemId, this.state.token).then(res => {
+			this.getItems();
+		});
+	}
   }
   
   onLogin(token, userName)
@@ -196,7 +181,8 @@ class App extends Component {
 	  this.forceUpdate();
   }
 
-  clearState() {
+  clearState() 
+  {
     this.setState({
       showDetails: false,
       selectedItem: null,

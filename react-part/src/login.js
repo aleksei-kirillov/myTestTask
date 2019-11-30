@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Configuration from './configuration';
+import Configuration from './shared/configuration';
 import './App.css';
 
 class LoginControl extends Component {
@@ -18,11 +18,13 @@ class LoginControl extends Component {
 	{
 		userName: lastUserName,
 		password: "",
-		token: null
+		token: null,
+		error: null
 	}
   }
 	
   render() {
+	  const error = this.state.error == null? "" : (<div className="error">{this.state.error}</div>);
     return (	
       <div className="login-panel">
 		  <div>
@@ -37,7 +39,7 @@ class LoginControl extends Component {
 			<span className="button clickable" onClick={() => this.onLogin()}>Login</span>
 		  </div>	  
 		  <br/>
-		  
+		  {error}
 		  <div className="login-help-text">
 		  If you'll sign up with non-existing user name, new account will be created automatically with password you did provide this first time. 
 		  No password changing or reminding functionality, so put proper password - at least 79 symbols with at least 3 lower case letters, 3 capital letters, 18 digits and 7 Chinese Simplified hieroglyphs in it.
@@ -73,6 +75,9 @@ class LoginControl extends Component {
 	  .then(json => {
 		console.log("Retrieved items:");
 		console.log(json);
+		
+		if(json.error !== undefined && json.error !== null)
+			this.state.error = json.error;
 		
 		this.props.data(json.token, this.state.userName);
 	  })

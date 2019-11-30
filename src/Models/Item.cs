@@ -5,40 +5,28 @@
 
   public class Episode
   {
-    [JsonProperty(PropertyName = "episode")]
-    public string EpisodeId { get; set; }
-
-    [JsonProperty(PropertyName = "description")]
-    public string Description { get; set; }
-    [JsonProperty(PropertyName = "viewed")]
-    public bool Viewed { get; set; }
+    public string episodeId { get; set; }
+    public string description { get; set; }
+    public bool viewed { get; set; }
   }
 
   public class Item
   {
-    [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
+    public string id { get; set; }
 
-    [JsonProperty(PropertyName = "link")]
-    public string Link { get; set; }
+    public string link { get; set; }
 
-    [JsonProperty(PropertyName = "user")]
-    public string User { get; set; }
+    public string user { get; set; }
 
-    [JsonProperty(PropertyName = "name")]
-    public string Name { get; set; }
+    public string name { get; set; }
 
-    [JsonProperty(PropertyName = "summary")]
-    public string Summary { get; set; }
+    public string summary { get; set; }
 
-    [JsonProperty(PropertyName = "lastSeason")]
-    public string LastSeason { get; set; }
+    public string lastSeason { get; set; }
 
-    [JsonProperty(PropertyName = "lastEpisode")]
-    public string LastEpisode { get; set; }
+    public string lastEpisode { get; set; }
 
-    [JsonProperty(PropertyName = "episodes")]
-    public Episode[] Episodes { get; set; }
+    public Episode[] episodes { get; set; }
     public override string ToString()
     {
       return JsonConvert.SerializeObject(this);

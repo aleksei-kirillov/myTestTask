@@ -1,7 +1,16 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import './App.css';
 
+class ItemEpisodes extends Component {
+	render()
+	{		
+		const item = this.props.data.item;
+		const onEpisodeClick = this.props.data.onEpisodeClick;
+		if(item === null || item === undefined)
+			return "";
+		return item.episodes.length > 0? item.episodes.map((episode)=> 
+			<span key={episode.episodeId} onClick={()=>{onEpisodeClick(item, episode.episodeId)}}><ItemEpisode data={{episode:episode, item:item}} /></span>) : "";
+	}
+}
 
 class ItemEpisode extends React.Component {
 	
@@ -16,8 +25,8 @@ class ItemEpisode extends React.Component {
 			title = "already viewed";
 		}
 		
-		return (<li className={className} title={title}><span className="episode-episode">{episode.episode}</span></li>)
+		return (<li className={className} title={title}><span className="episode-episode">{episode.episodeId}</span></li>)
 	}
 }
 
-export default ItemEpisode;
+export default ItemEpisodes;

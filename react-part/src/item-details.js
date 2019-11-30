@@ -14,7 +14,7 @@ class ItemDetails extends Component {
 	const episodes = this.props.item.episodes;
     const listEpisodes = episodes.map((episode) =>
       <li key={episode.episode} onClick={() => {}}>
-         <span className="episode-episode">{episode.episode}</span>&nbsp;|&nbsp; {episode.description}
+         <span className="episode-episode">{episode.episodeId}</span>&nbsp;|&nbsp; {episode.description}
       </li>
     );
 
@@ -31,16 +31,13 @@ class ItemDetails extends Component {
   }
 
   onEdit() {
-    this.props.onEdit();
+    this.props.onEdit(this.props.item);
   }
 
   onDelete() {
-    const item = this.props.item;
-    if(window.confirm("Are you sure to delete item: " + item.name + " ?")) {
-      this.props.onDelete(item.link);
-    }
+		const item = this.props.item;
+		this.props.onDelete(item);
   }
-
 }
 
 export default ItemDetails;

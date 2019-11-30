@@ -17,10 +17,10 @@ class ItemService {
       .then(json => {
         console.log("Retrieved items:");
         console.log(json);
-        /*for(var i = 0; i < itemArray.length; i++) {
-          itemArray[i]["link"] =  itemArray[i]._links.self.href;
-          items.push(itemArray[i]);
-        }*/
+        for(var i = 0; i < json.items.length; i++) {
+          if(json.items[i].episodes === null || json.items[i].episodes === undefined)
+			  json.items[i].episodes = [];
+        }
         return json.items;
       })
       .catch(error => {
@@ -28,9 +28,9 @@ class ItemService {
       });
   }
 
-  async getItem(itemLink, token) {
+  async getItem(itemId, token) {
     console.log("ItemService.getItem():");
-    console.log("Item: " + itemLink);
+    console.log("Item: " + itemId);
     return fetch(this.config.ITEM_GET_URL + token)
       .then(response => {
         if (!response.ok) {
@@ -39,7 +39,8 @@ class ItemService {
         return response.json();
       })
       .then(item => {
-          item["link"] = item._links.self.href;
+          if(item.episodes === null || item.episodes === undefined)
+			  item.episodes = [];
           return item;
         }
       )
@@ -53,7 +54,6 @@ class ItemService {
     console.log(newitem);
     return fetch(this.config.ITEM_CREATE_URL + token, {
       method: "POST",
-      mode: "cors",
       headers: {
             "Content-Type": "application/json"
         },
@@ -70,13 +70,14 @@ class ItemService {
       });
   }
 
-  async deleteItem(itemlink, token) {
+  async deleteItem(itemId, token) {
     console.log("ItemService.deleteItem():");
-    console.log("item: " + itemlink);
+    console.log("itemId: " + itemId);
     return fetch(this.config.ITEM_DELETE_URL + token, {
-      method: "DELETE",
-      mode: "cors",
-	  body: JSON.stringify(itemlink)
+		//method: "DELETE"
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+	  body: JSON.stringify({id:itemId})
     })
       .then(response => {
         if (!response.ok) {
@@ -92,8 +93,8 @@ class ItemService {
     console.log("ItemService.updateItem():");
     console.log(item);
     return fetch(this.config.ITEM_UPDATE_URL + token, {
-		method: "PUT",
-		mode: "cors",
+		//method: "PUT"
+		method: "POST",
 		headers: {"Content-Type": "application/json"},
 		body: JSON.stringify(item)
 	})
