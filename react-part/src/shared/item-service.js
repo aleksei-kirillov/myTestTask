@@ -66,6 +66,8 @@ class ItemService {
 
   async deleteItem(itemId, token) {
     return fetch(this.config.ITEM_DELETE_URL + token, {
+		//to make easier debugging, HTTP method changed to POST
+		//on production  
 		//method: "DELETE"
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -83,6 +85,9 @@ class ItemService {
 
   async updateItem(item, token) {
     return fetch(this.config.ITEM_UPDATE_URL + token, {
+		//to make easier debugging, HTTP method changed to POST
+		//on production  
+
 		//method: "PUT"
 		method: "POST",
 		headers: {"Content-Type": "application/json"},

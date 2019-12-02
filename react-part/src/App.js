@@ -168,7 +168,7 @@ class App extends Component {
   onDeleteItem(item) {
     this.clearState();
     if(window.confirm("Are you sure to delete item: " + item.name + " ?")) {
-		this.itemService.deleteItem(item.itemId, this.state.token).then(res => {
+		this.itemService.deleteItem(item.id, this.state.token).then(res => {
 			this.getItems();
 		});
 	}
