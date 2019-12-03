@@ -185,14 +185,10 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Home.cshtml" />
-    <Content Include="Views\Item\Create.cshtml" />
-    <Content Include="Views\Item\Delete.cshtml" />
-    <Content Include="Views\Item\Details.cshtml" />
-    <Content Include="Views\Item\Edit.cshtml" />
-    <Content Include="Views\Item\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Item\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +231,16 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Azure.DocumentDB.1.10.0\build\Microsoft.Azure.DocumentDB.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.DocumentDB.1.10.0\build\Microsoft.Azure.DocumentDB.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>cd $(SolutionDir)react-part
+
+echo $(SolutionDir)react-part\build.bat
+$(SolutionDir)react-part\build.bat
+echo xcopy $(SolutionDir)react-part\build\*  $(SolutionDir)src\Content\ /s /e /y
+xcopy $(SolutionDir)react-part\build\*  $(SolutionDir)src\Content\ /s /e /y
+
+cd $(SolutionDir)</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -73,7 +73,6 @@
 
 //    [HttpDelete]
     [HttpPost]
-    [Route("{controller}/{action}/{token}/{id}")]
     [ActionName("Delete")]
     public async Task<ActionResult> DeleteAsync(string id, string token)
     {
